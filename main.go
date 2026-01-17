@@ -35,11 +35,12 @@ func main() {
 	app.ConnectStartup(func() {
 		log.Println("Service Started")
 
-		if err := storage.InitDB(); err != nil {
+		if err := storage.InitDB(""); err != nil {
 			log.Printf("Failed to init DB: %v", err)
 			return
 		}
 
+		daemon.SetDebugMode(debugMode)
 		daemon.Start(&app.Application)
 
 		log.Println("Holding application for daemon persistence")
@@ -52,20 +53,13 @@ func main() {
 		log.Println("Activation requested - Opening Window")
 
 		if mainWindow != nil {
-			if daemon.IsRinging() {
-				log.Println("Alarm triggering on existing window - Recreating to force focus")
-				mainWindow.Destroy()
-
-				mainWindow = nil
-			} else {
-				log.Println("Window already open, presenting it")
-				mainWindow.Present()
-				return
-			}
+			log.Println("Window already open, presenting it")
+			mainWindow.Present()
+			return
 		}
 
 		ui.ApplyStyles()
-		mainWindow = NewWindow(app)
+		mainWindow = NewWindow(app, debugMode)
 
 		mainWindow.ConnectDestroy(func() {
 			log.Println("Window destroyed")

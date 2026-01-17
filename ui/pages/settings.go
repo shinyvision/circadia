@@ -15,7 +15,7 @@ import (
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
 )
 
-func NewSettingsPage() *gtk.Box {
+func NewSettingsPage(debugMode bool) *gtk.Box {
 	box := gtk.NewBox(gtk.OrientationVertical, 10)
 	box.SetMarginTop(20)
 	box.SetMarginBottom(20)
@@ -194,7 +194,12 @@ func NewSettingsPage() *gtk.Box {
 	lblDur.AddCSSClass("h3")
 	lblDur.SetWidthChars(6)
 
-	scale := gtk.NewScaleWithRange(gtk.OrientationHorizontal, 5, 30, 1)
+	minVal := 5.0
+	if debugMode {
+		minVal = 1.0
+	}
+
+	scale := gtk.NewScaleWithRange(gtk.OrientationHorizontal, minVal, 30, 1)
 	scale.SetValue(float64(snoozeDur))
 	scale.SetHExpand(true)
 	scale.SetDrawValue(false)

@@ -11,18 +11,39 @@ import (
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
 )
 
-func NewSleepHistoryPage() *gtk.Box {
+type SleepHistoryController struct {
+	Box *gtk.Box
+}
+
+func NewSleepHistoryPage() *SleepHistoryController {
 	box := gtk.NewBox(gtk.OrientationVertical, 10)
 	box.SetMarginTop(20)
 	box.SetMarginStart(20)
 	box.SetMarginEnd(20)
 	box.SetMarginBottom(20)
 
+	controller := &SleepHistoryController{Box: box}
+	controller.Refresh()
+
+	return controller
+}
+
+func (c *SleepHistoryController) Refresh() {
+	// Clear all existing children
+	// Clear all existing children
+	for {
+		child := c.Box.FirstChild()
+		if child == nil {
+			break
+		}
+		c.Box.Remove(child)
+	}
+
 	history, err := storage.GetHistory(30)
 	if err != nil {
 		errLabel := gtk.NewLabel("Failed to load history")
-		box.Append(errLabel)
-		return box
+		c.Box.Append(errLabel)
+		return
 	}
 
 	graphArea := gtk.NewDrawingArea()
@@ -30,24 +51,22 @@ func NewSleepHistoryPage() *gtk.Box {
 	graphArea.SetDrawFunc(func(area *gtk.DrawingArea, cr *cairo.Context, width, height int) {
 		drawHistoryGraph(cr, width, height, history)
 	})
-	box.Append(graphArea)
+	c.Box.Append(graphArea)
 
 	avgSnooze := calculateAverageSnooze(history)
 	avgDuration := calculateAverageSleepDuration(history)
 	avgCard := createAverageCard(avgDuration, avgSnooze)
-	box.Append(avgCard)
+	c.Box.Append(avgCard)
 
 	lastSession, err := storage.GetLastSleepSession()
 	if err == nil && lastSession != nil {
 		card := createLastNightCard(lastSession)
-		box.Append(card)
+		c.Box.Append(card)
 	} else {
 		noData := gtk.NewLabel("No sleep data recorded yet.")
 		noData.SetHAlign(gtk.AlignStart)
-		box.Append(noData)
+		c.Box.Append(noData)
 	}
-
-	return box
 }
 
 func drawHistoryGraph(cr *cairo.Context, width, height int, history []storage.SleepSession) {

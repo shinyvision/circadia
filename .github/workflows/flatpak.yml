@@ -1,0 +1,41 @@
+name: Build Flatpak (arm64)
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    name: Build Flatpak
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      
+      - name: Install Flatpak
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      - name: Build Flatpak
+        run: |
+          # This runs flatpak-builder with QEMU for arm64.
+          # It uses the manifest to pull the Golang SDK extension and build inside the sandbox.
+          flatpak-builder --user --install-deps-from=flathub --force-clean --arch=aarch64 --repo=repo build-dir io.github.shinyvision.Circadia.yml
+
+      - name: Create Bundle
+        run: |
+          flatpak build-bundle --arch=aarch64 repo circadia.flatpak io.github.shinyvision.Circadia
+
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: circadia.flatpak

@@ -222,38 +222,6 @@ func triggerAlarm(app *gio.Application, alarm storage.Alarm) {
 
 var snoozeTimer *time.Timer
 
-func SnoozeAlarm() {
-	StopAlarmSound()
-	activeAlarmID = -1
-
-	if snoozeTimer != nil {
-		snoozeTimer.Stop()
-	}
-
-	log.Println("Snoozing...")
-	durationMin, err := storage.GetSnoozeDuration()
-	if err != nil {
-		durationMin = 15
-	}
-	log.Printf("Snoozing for %d minutes...", durationMin)
-	snoozeTimer = time.AfterFunc(time.Duration(durationMin)*time.Minute, func() {
-		log.Println("Snooze finished! Ringing again.")
-
-		StartAlarmSound()
-
-		if globalApp != nil {
-			glib.IdleAdd(func() {
-				globalApp.Activate()
-			})
-		}
-
-		h, m := time.Now().Hour(), time.Now().Minute()
-		if err := ipc.SendSignal(fmt.Sprintf("alarmTriggered:%d:%02d", h, m)); err != nil {
-			log.Printf("Failed to signal alarm to UI: %v", err)
-		}
-	})
-}
-
 func StopAlarm() {
 	StopAlarmSound()
 	activeAlarmID = -1
@@ -361,10 +329,82 @@ func checkSmartWakeUp() {
 			if globalApp != nil {
 				glib.IdleAdd(func() {
 					triggerAlarm(globalApp, a)
-					ToggleSleepMode(false)
+					// Sleep Mode remains active until alarm is stopped
 				})
 			}
 			return
 		}
 	}
+}
+
+var OnSleepSessionSaved func()
+
+func IsSleepModeEnabled() bool {
+	t, err := storage.GetSleepStartTime()
+	return err == nil && !t.IsZero()
+}
+
+var debugMode bool
+
+func SetDebugMode(enabled bool) {
+	debugMode = enabled
+	log.Printf("Daemon Debug Mode: %v", debugMode)
+}
+
+func SnoozeAlarm() {
+	StopAlarmSound()
+	activeAlarmID = -1
+
+	if snoozeTimer != nil {
+		snoozeTimer.Stop()
+	}
+
+	log.Println("Snoozing...")
+	durationMin, err := storage.GetSnoozeDuration()
+	if err != nil {
+		durationMin = 15
+	}
+
+	log.Printf("Snoozing for %d minutes...", durationMin)
+	snoozeTimer = time.AfterFunc(time.Duration(durationMin)*time.Minute, func() {
+		log.Println("Snooze finished! Ringing again.")
+
+		StartAlarmSound()
+
+		if globalApp != nil {
+			glib.IdleAdd(func() {
+				globalApp.Activate()
+			})
+		}
+
+		h, m := time.Now().Hour(), time.Now().Minute()
+		if err := ipc.SendSignal(fmt.Sprintf("alarmTriggered:%d:%02d", h, m)); err != nil {
+			log.Printf("Failed to signal alarm to UI: %v", err)
+		}
+	})
+}
+
+func FinalizeSleepSession(startTime, endTime time.Time, snoozeCount int, bypassDurationCheck bool) error {
+	duration := endTime.Sub(startTime)
+
+	// Only save if duration > 1 hour OR if check is bypassed (e.g. Alarm Stop)
+	if bypassDurationCheck || duration > 1*time.Hour {
+		// Save to DB
+		if err := storage.AddSleepSession(startTime, endTime, snoozeCount); err != nil {
+			log.Printf("Failed to save sleep session: %v", err)
+			return err
+		}
+		log.Printf("Sleep Session Saved: %v - %v (Snoozes: %d)", startTime, endTime, snoozeCount)
+
+		if OnSleepSessionSaved != nil {
+			glib.IdleAdd(func() {
+				OnSleepSessionSaved()
+			})
+		}
+
+		return nil
+	}
+
+	log.Printf("Sleep Session discarded (too short): %v", duration)
+	return nil
 }

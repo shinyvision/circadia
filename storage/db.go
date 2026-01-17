@@ -13,17 +13,25 @@ import (
 
 var DB *sql.DB
 
-func InitDB() error {
-	dbPath, err := xdg.DataFile("circadia/user.db")
-	if err != nil {
-		return fmt.Errorf("could not resolve data file path: %w", err)
+func InitDB(connStr string) error {
+	var dbPath string
+	var err error
+
+	if connStr == "" {
+		dbPath, err = xdg.DataFile("circadia/user.db")
+		if err != nil {
+			return fmt.Errorf("could not resolve data file path: %w", err)
+		}
+
+		if err := os.MkdirAll(filepath.Dir(dbPath), 0755); err != nil {
+			return fmt.Errorf("could not create data directory: %w", err)
+		}
+		log.Printf("Opening database at %s", dbPath)
+	} else {
+		dbPath = connStr
+		log.Printf("Opening database at %s", dbPath)
 	}
 
-	if err := os.MkdirAll(filepath.Dir(dbPath), 0755); err != nil {
-		return fmt.Errorf("could not create data directory: %w", err)
-	}
-
-	log.Printf("Opening database at %s", dbPath)
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return fmt.Errorf("could not open database: %w", err)

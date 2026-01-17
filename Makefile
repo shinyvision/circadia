@@ -2,7 +2,7 @@
 
 install:
 	@if [ ! -f circadia-bin ]; then \
-		$(MAKE) build; \
+		go build -o circadia-bin .; \
 	else \
 		echo "Using existing binary: circadia-bin"; \
 	fi
