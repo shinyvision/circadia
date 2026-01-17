@@ -1,0 +1,333 @@
+/* Global Reset & Base Colors */
+window {
+  background-color: #000000;
+  color: #FFFFFF;
+  font-family: "Sans", sans-serif;
+}
+
+/* Typography */
+label {
+  color: #FFFFFF;
+}
+
+.title-label {
+  font-size: 32px;
+  font-weight: 800;
+  color: #2997FF;
+  /* Blue title */
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
+
+.subtitle-label {
+  font-size: 32px;
+  font-weight: 800;
+  color: #2997FF;
+  margin-bottom: 10px;
+}
+
+/* Tabs */
+.nav-box {
+  margin-bottom: 15px;
+}
+
+.nav-button {
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  color: #8E8E93;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-bottom: 2px solid transparent;
+}
+
+.nav-button.active {
+  color: #2997FF;
+  border-bottom: 2px solid #2997FF;
+}
+
+/* Cards */
+.card-box {
+  background-color: #1C1C1E;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.h1 {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+.caption {
+  font-size: 14px;
+  color: #8E8E93;
+}
+
+/* Buttons */
+.pill-button {
+  background-color: #2997FF;
+  color: white;
+  border-radius: 20px;
+  padding: 5px 15px;
+  font-weight: bold;
+}
+
+.circle-button {
+  background-color: #2997FF;
+  color: white;
+  border-radius: 100%;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+}
+
+.action-button {
+  background-color: #2997FF;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  /* Highly rounded */
+  padding: 15px;
+  margin-top: 20px;
+}
+
+/* Floating Action Button */
+.fab-btn {
+  background-color: #2C2C2E;
+  background-image: none;
+  color: white;
+  border-radius: 20px;
+  min-width: 80px;
+  min-height: 80px;
+  padding: 0;
+  margin: 0;
+  font-size: 36px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  margin-right: 32px;
+  margin-bottom: 32px;
+  margin-left: 24px;
+}
+
+.fab-active {
+  background-color: #2997FF;
+  border: none;
+}
+
+/* Overlay Modal */
+.modal-dimmer {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.modal-content {
+  background-color: #1e1e1e;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #333333;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.wake-time-pill {
+  background-color: #2997FF;
+  color: white;
+  border-radius: 20px;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+/* Switch */
+switch slider {
+  background-color: #FFFFFF;
+}
+
+switch:checked {
+  background-color: #2997FF;
+}
+
+/* Time Picker Modal */
+.time-display-btn {
+  font-size: 32px;
+  font-weight: bold;
+  background: transparent;
+  color: #dddddd;
+  /* distinct color? or just text color */
+  border: none;
+  box-shadow: none;
+  padding: 10px;
+}
+
+.time-display-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.time-display-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.picker-val {
+  font-size: 48px;
+  font-family: monospace;
+  font-weight: bold;
+  margin: 0 10px;
+}
+
+.picker-btn {
+  font-size: 24px;
+  min-width: 64px;
+  min-height: 64px;
+  border-radius: 32px;
+  /* Circular */
+  padding: 0;
+  margin: 5px;
+}
+
+.modal-actions {
+  margin-top: 20px;
+}
+
+.modal-btn {
+  min-width: 100px;
+  min-height: 50px;
+  font-size: 18px;
+}
+
+/* Modal Animations */
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-scale-in {
+  0% {
+    transform: scale(0.8);
+  }
+
+  90% {
+    transform: scale(1.025);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes modal-scale-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+.modal-dimmer-in {
+  opacity: 1;
+  animation-name: modal-fade-in;
+  animation-duration: 150ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.modal-dimmer-out {
+  opacity: 0;
+  animation-name: modal-fade-out;
+  animation-duration: 100ms;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+.modal-content-in {
+  transform: scale(1);
+  animation-name: modal-scale-in;
+  animation-duration: 150ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.modal-content-out {
+  transform: scale(0.8);
+  animation-name: modal-scale-out;
+  animation-duration: 100ms;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+.black-background {
+  background-color: #000000;
+}
+
+/* Sleep Mode Overlay */
+.goodnight-overlay {
+  background-color: #000000;
+  transition: opacity 750ms ease-in-out;
+  opacity: 0;
+}
+
+.goodnight-overlay.visible {
+  opacity: 1;
+}
+
+.goodnight-text {
+  font-size: 32px;
+  font-weight: 300;
+  color: #FFFFFF;
+  letter-spacing: 2px;
+}
+
+/* Content Fade */
+.content-transition {
+  transition: opacity 750ms ease-in-out;
+  opacity: 1;
+}
+
+.content-transition.hidden {
+  opacity: 0;
+}
+/* Thicker Slider */
+scale trough {
+    min-height: 10px;
+    border-radius: 5px;
+    background-color: #333333;
+}
+scale highlight {
+    min-height: 10px;
+    border-radius: 5px;
+    background-color: #2997FF;
+}
+scale slider {
+    min-height: 24px;
+    min-width: 24px;
+    margin: -7px;
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}

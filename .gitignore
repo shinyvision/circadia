@@ -1,0 +1,6 @@
+circadia
+vendor/
+.flatpak-builder/
+build-dir/
+install.sh
+deploy.sh

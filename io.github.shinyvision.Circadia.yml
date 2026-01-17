@@ -1,0 +1,36 @@
+app-id: io.github.shinyvision.Circadia
+runtime: org.gnome.Platform
+runtime-version: '49'
+sdk: org.gnome.Sdk
+
+command: /app/bin/circadia
+
+finish-args:
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --talk-name=org.freedesktop.portal.Background
+  - --talk-name=org.kde.PowerManagement
+  - --share=network
+  - --device=dri
+
+modules:
+  - name: circadia
+    buildsystem: simple
+    build-options:
+      no-debuginfo: true
+      append-path: /usr/lib/sdk/golang/bin
+      env:
+        GOROOT: /usr/lib/sdk/golang
+        CFLAGS: ""
+        CXXFLAGS: ""
+        LDFLAGS: ""
+        GOFLAGS: ""
+    build-commands:
+      - make install
+      
+    sources:
+      - type: dir
+        path: .
+      - type: file
+        path: circadia-bin

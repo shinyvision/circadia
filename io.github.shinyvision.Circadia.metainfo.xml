@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.shinyvision.Circadia</id>
+
+  <name>Circadia</name>
+  <summary>A simple alarm clock and sleep tracker</summary>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <description>
+    <p>
+      Circadia is a mobile-friendly alarm clock application for Linux.
+      It features smart wake-up, sleep tracking, and a beautiful UI designed for touch screens.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">io.github.shinyvision.Circadia.desktop</launchable>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://github.com/shinyvision/circadia/raw/main/.github/screenshots/image1.png</image>
+      <image>https://github.com/shinyvision/circadia/raw/main/.github/screenshots/image2.png</image>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://github.com/shinyvision/circadia</url>
+  <url type="bugtracker">https://github.com/shinyvision/circadia/issues</url>
+  
+  <content_rating type="oars-1.1" />
+  
+  <releases>
+    <release version="1.0.0" date="2026-01-18" />
+  </releases>
+</component>

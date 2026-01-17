@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Circadia Service
+Comment=Background service for Circadia
+Exec=circadia -d
+NoDisplay=true
