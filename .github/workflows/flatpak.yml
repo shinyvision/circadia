@@ -18,17 +18,26 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       
-      - name: Install Flatpak
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder
+          sudo apt-get install -y flatpak flatpak-builder ccache
           flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+
+      - name: Cache Flatpak Builder directory
+        uses: actions/cache@v5
+        with:
+          path: .flatpak-builder
+          key: ${{ runner.os }}-flatpak-builder-${{ hashFiles('io.github.shinyvision.Circadia.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-flatpak-builder-
 
       - name: Build Flatpak
         run: |
           # This runs flatpak-builder with QEMU for arm64.
           # It uses the manifest to pull the Golang SDK extension and build inside the sandbox.
-          flatpak-builder --user --install-deps-from=flathub --force-clean --arch=aarch64 --repo=repo build-dir io.github.shinyvision.Circadia.yml
+          # caching: we use --ccache and avoid --force-clean to reuse previous build artifacts
+          flatpak-builder --user --install-deps-from=flathub --arch=aarch64 --ccache --keep-build-dirs --repo=repo build-dir io.github.shinyvision.Circadia.yml
 
       - name: Create Bundle
         run: |
